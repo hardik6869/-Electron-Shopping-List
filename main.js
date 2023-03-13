@@ -9,15 +9,20 @@ let win;
 
 app.on("ready", function () {
   // Create new window
-  addWindow = new BrowserWindow({});
+  win = new BrowserWindow({});
   // Load HTML file into window
-  addWindow.loadURL(
+  win.loadURL(
     url.format({
       pathname: path.join(__dirname, "mainWindow.html"),
       protocol: "file:",
       slashes: true,
     })
   );
+  // Quit app when closed
+  win.on("closed", function () {
+    app.quit();
+  });
+
   // Build menu from template
   const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
   Menu.setApplicationMenu(mainMenu);
@@ -26,19 +31,23 @@ app.on("ready", function () {
 // Handle Create Add Window
 function createAddWindow() {
   // Create new window
-  win = new BrowserWindow({
+  addWindow = new BrowserWindow({
     width: 300,
     height: 200,
     title: "Add Shopping List Item ",
   });
   // Load HTML file into window
-  win.loadURL(
+  addWindow.loadURL(
     url.format({
       pathname: path.join(__dirname, "addWindow.html"),
       protocol: "file:",
       slashes: true,
     })
   );
+  // Garbage collection handle
+  addWindow.on("create", function () {
+    addWindow = null;
+  });
 }
 
 // Create menu Template
