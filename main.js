@@ -1,6 +1,7 @@
 const { app, BrowserWindow, Menu } = require("electron");
 const url = require("url");
 const path = require("path");
+const { platform } = require("os");
 
 let win;
 
@@ -8,9 +9,9 @@ let win;
 
 app.on("ready", function () {
   // Create new window
-  win = new BrowserWindow({});
+  addWindow = new BrowserWindow({});
   // Load HTML file into window
-  win.loadURL(
+  addWindow.loadURL(
     url.format({
       pathname: path.join(__dirname, "mainWindow.html"),
       protocol: "file:",
@@ -22,6 +23,24 @@ app.on("ready", function () {
   Menu.setApplicationMenu(mainMenu);
 });
 
+// Handle Create Add Window
+function createAddWindow() {
+  // Create new window
+  win = new BrowserWindow({
+    width: 300,
+    height: 200,
+    title: "Add Shopping List Item ",
+  });
+  // Load HTML file into window
+  win.loadURL(
+    url.format({
+      pathname: path.join(__dirname, "addWindow.html"),
+      protocol: "file:",
+      slashes: true,
+    })
+  );
+}
+
 // Create menu Template
 const mainMenuTemplate = [
   {
@@ -29,12 +48,16 @@ const mainMenuTemplate = [
     submenu: [
       {
         label: "Add Item",
+        click() {
+          createAddWindow();
+        },
       },
       {
         label: "Clear Item",
       },
       {
         label: "Quit",
+        accelerator: process.platform == "darwin" ? "Command+Q" : "Ctrl+Q",
         click() {
           app.quit();
         },
