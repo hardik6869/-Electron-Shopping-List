@@ -2,6 +2,9 @@ const { app, BrowserWindow, Menu, ipcMain } = require("electron");
 const url = require("url");
 const path = require("path");
 
+// SET ENV
+process.env.NODE_ENV = "production";
+
 let win;
 // Listen for app to be ready
 app.on("ready", function () {
