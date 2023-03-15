@@ -1,12 +1,9 @@
-const { app, BrowserWindow, Menu } = require("electron");
+const { app, BrowserWindow, Menu, ipcMain } = require("electron");
 const url = require("url");
 const path = require("path");
-const { platform } = require("os");
 
 let win;
-
 // Listen for app to be ready
-
 app.on("ready", function () {
   // Create new window
   win = new BrowserWindow({});
@@ -45,10 +42,16 @@ function createAddWindow() {
     })
   );
   // Garbage collection handle
-  addWindow.on("create", function () {
+  addWindow.on("close", function () {
     addWindow = null;
   });
 }
+
+// Catch item:add
+ipcMain.on("item:add", function (e, item) {
+  win.webContents.send("item:add", item);
+  addWindow.close();
+});
 
 // Create menu Template
 const mainMenuTemplate = [
@@ -63,6 +66,9 @@ const mainMenuTemplate = [
       },
       {
         label: "Clear Item",
+        click() {
+          win.webContents.send("item:clear");
+        },
       },
       {
         label: "Quit",
